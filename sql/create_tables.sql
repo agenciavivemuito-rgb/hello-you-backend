@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS roles (
     role_name VARCHAR(50) UNIQUE NOT NULL,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 -- Create users table
@@ -18,18 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
     phone_number VARCHAR(20),
     role_id INT REFERENCES roles(id) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
--- Create contracts table
-CREATE TABLE IF NOT EXISTS contracts (
-    id SERIAL PRIMARY KEY,
-    start_date TIMESTAMP WITH TIME ZONE NOT NULL,
-    end_date TIMESTAMP WITH TIME ZONE NOT NULL,
-    total_value DECIMAL(15, 2) NOT NULL,
-    user_id INT REFERENCES users(id) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 -- Create project table
@@ -45,7 +34,7 @@ CREATE TABLE IF NOT EXISTS projects (
     observation_date TIMESTAMP WITH TIME ZONE,
     user_id INT REFERENCES users(id) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 -- Create project contents table (e.g., images, videos)
@@ -55,7 +44,7 @@ CREATE TABLE IF NOT EXISTS projects_content (
     content_url TEXT NOT NULL,
     project_id INT REFERENCES projects(id) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 -- Create social media projects table
@@ -65,7 +54,7 @@ CREATE TABLE IF NOT EXISTS social_media_projects (
     post_date TIMESTAMP WITH TIME ZONE,
     project_id INT REFERENCES projects(id) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 -- Create paid media projects table
@@ -80,7 +69,7 @@ CREATE TABLE IF NOT EXISTS paid_media_projects (
     cpa DECIMAL(10, 2),
     project_id INT REFERENCES projects(id) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 -- Create websites and landing pages projects table
@@ -93,7 +82,22 @@ CREATE TABLE IF NOT EXISTS websites_landing_pages_projects (
     performance_metrics INT DEFAULT 0 NOT NULL,
     project_id INT REFERENCES projects(id) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- Create influencers projects table
+CREATE TABLE IF NOT EXISTS influencers_projects (
+    id SERIAL PRIMARY KEY,
+    profile_picture_url TEXT,
+    instagram_handle VARCHAR(100),
+    tiktok_handle VARCHAR(100),
+    instagram_post_count INT DEFAULT 0 NOT NULL,
+    instagram_story_count INT DEFAULT 0 NOT NULL,
+    tiktok_post_count INT DEFAULT 0 NOT NULL,
+    phone_number VARCHAR(20),
+    project_id INT REFERENCES projects(id) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 -- Create documents table
@@ -101,9 +105,10 @@ CREATE TABLE IF NOT EXISTS documents (
     id SERIAL PRIMARY KEY,
     document_name VARCHAR(255) NOT NULL,
     document_url TEXT NOT NULL,
-    user_id INT REFERENCES users(id) NOT NULL,
+    user_id INT REFERENCES users(id),
+    project_id INT REFERENCES projects(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 COMMIT;
